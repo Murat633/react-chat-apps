@@ -1,0 +1,17 @@
+.home {
+    width: 100%;
+    display: flex;
+    gap: 3rem;
+    padding: 1rem;
+}
+
+.server {
+    padding: 1rem;
+    box-shadow: 3px 0 7px 5px #000;
+    border-radius: 5px;
+    transition: all .3s;
+}
+
+.server:hover {
+    box-shadow: -3px 0 7px 5px #000;
+}
