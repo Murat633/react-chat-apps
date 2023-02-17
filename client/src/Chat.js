@@ -5,9 +5,9 @@ import { Navigate, useParams } from 'react-router-dom';
 
 
 
-function Chat({ messages, setMessages, userId, servers }) {
+function Chat({ messages, setMessages, userId, servers, user }) {
     let socket = io("http://localhost:5000");
-    const [username, setUsername] = useState(localStorage.getItem("username"));
+    const [username, setUsername] = useState(user[0].username);
     const [message, setMessage] = useState("");
     const serverId = useParams().serverId
 
@@ -43,7 +43,6 @@ function Chat({ messages, setMessages, userId, servers }) {
     }, [messages])
 
 
-
     return (
         <div className="chat_panel">
             <div className="header">
@@ -65,7 +64,7 @@ function Chat({ messages, setMessages, userId, servers }) {
                 ))}
             </div>
             <form className="form" onSubmit={sendMessage}>
-                <input type="text" placeholder='User Name' disabled className='username_input' value={localStorage.getItem("username")} />
+                <input type="text" placeholder='User Name' disabled className='username_input' value={user[0].username} />
                 <input placeholder='Enter Your Message!' className='message_input' value={message} onChange={(e) => setMessage(e.target.value)} />
                 <button type='submit' className='sendBtn'>Send Message</button>
             </form>

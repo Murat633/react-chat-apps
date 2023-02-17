@@ -7,17 +7,19 @@ const server = http.createServer(app);
 
 app.use(cors())
 
+// FAKE DB
+
 const serverList = [
     {
         server_id: 1,
-        server_name: "Murat Akyolsa",
-        server_description: "ahmet'ın Sunucusu",
+        server_name: "Sunucu 1",
+        server_description: "Sunucu 1 Açıklama",
         ownerId: 1,
         users: [1]
     }, {
         server_id: 2,
-        server_name: "Murat Akyol",
-        server_description: "Murat'ın Sunucusu",
+        server_name: "Sunucu 2",
+        server_description: "Sunucu 2 Açklama",
         ownerId: 1,
         users: [1]
     },
@@ -26,7 +28,7 @@ const serverList = [
 const userList = [
     {
         userId: 1,
-        username: "Murat633",
+        username: "Murat6565",
         user_email: "muratakyoll533@gmail.com",
         servers: [1, 2]
     },
@@ -60,8 +62,10 @@ let io = new Server(server, {
     }
 });
 
+// Veri tabanı eklendiğinde socket.io kısımlarındaki boş istekler silinecek ve yerine express api istekleri getirilecek 
+// ["MESSAGES","USER","SERVER LİST","GET SERVER MESSAGES"]
+
 io.on("connection", (socket) => {
-    console.log("cc")
     socket.on("login", (info) => {
         socket.emit("userInfo", userList.filter((user) => user.userId == info.userId
         ))

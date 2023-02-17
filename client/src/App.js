@@ -57,7 +57,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login isLoggin={isLoggin} changeUsername={changeUsername} isLogginControl={isLogginControl} />} />
           <Route path="/home" element={<Home servers={servers} />} />
-          <Route path="/chat/:serverId" element={<Chat servers={servers} messages={messages} userId={user.userId} setMessages={setMessages} />} />
+          <Route path="/chat/:serverId" element={<Chat user={user} servers={servers} messages={messages} userId={user.userId} setMessages={setMessages} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
