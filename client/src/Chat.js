@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 import './styles/chat.css'
 import { Navigate, useParams } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { getServerMessages, sendMessage } from './redux/actions/messageListAction';
+import { connect } from 'react-redux'
 
 
 
-function Chat({ messages, setMessages, userId, servers, user }) {
+function Chat({ messages, userId, servers, user, actions }) {
     let socket = io("http://localhost:5000");
     const [username, setUsername] = useState(user[0].username);
     const [message, setMessage] = useState("");
@@ -19,22 +22,29 @@ function Chat({ messages, setMessages, userId, servers, user }) {
 
     const sendMessage = (e) => {
         e.preventDefault();
-        socket.emit("sendMessage", { username, userId, message, date: `${new Date().getHours()}:${new Date().getMinutes()}`, serverId })
-        setMessages([...messages, {
+        actions.sendMessage({
             username,
             userId,
             message,
             date: `${new Date().getHours()}:${new Date().getMinutes()}`,
             serverId
-        }])
+        })
+        // setMessages([...messages, {
+        //     username,
+        //     userId,
+        //     message,
+        //     date: `${new Date().getHours()}:${new Date().getMinutes()}`,
+        //     serverId
+        // }])
         setMessage("")
     }
 
     useEffect(() => {
-        socket.emit("getServerMessages", serverId)
-        socket.on("messages", messages => {
-            setMessages(messages)
-        })
+        //     socket.emit("getServerMessages", serverId)
+        //     socket.on("messages", messages => {
+        //         setMessages(messages)
+        //     })
+        actions.getMessages(serverId)
     }, [])
 
 
@@ -72,4 +82,19 @@ function Chat({ messages, setMessages, userId, servers, user }) {
     )
 }
 
-export default Chat
+const mapStateToProps = (state) => {
+    return {
+        messages: state.messageListReducer
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: {
+            getMessages: bindActionCreators(getServerMessages, dispatch),
+            sendMessage: bindActionCreators(sendMessage, dispatch)
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat)
