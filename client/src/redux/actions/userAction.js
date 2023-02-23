@@ -14,5 +14,3 @@ export const getUser = (userId, socket) => (dispatch) => {
     socket.emit("login", { userId })
     socket.on("userInfo", user => { dispatch(getUserSuccess(user[0])) })
 }
-
-
