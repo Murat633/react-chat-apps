@@ -15,13 +15,20 @@ const serverList = [
         server_name: "Sunucu 1",
         server_description: "Sunucu 1 Açıklama",
         ownerId: 1,
-        users: [1]
+        users: [1, 3]
     }, {
         server_id: 2,
         server_name: "Sunucu 2",
         server_description: "Sunucu 2 Açklama",
         ownerId: 1,
-        users: [1]
+        users: [1, 2, 3]
+    },
+    {
+        server_id: 3,
+        server_name: "Sunucu 2",
+        server_description: "Sunucu 2 Açklama",
+        ownerId: 1,
+        users: [1, 2, 3]
     },
 ]
 
@@ -38,22 +45,15 @@ const userList = [
         user_email: "muratakyoll533@gmail.com",
         servers: [1]
     },
+    {
+        userId: 3,
+        username: "mehmet",
+        user_email: "muratakyoll533@gmail.com",
+        servers: [1]
+    },
 ]
 
-const messages = [
-    {
-        serverId: 1,
-        username: "ahmet",
-        userId: 2,
-        message: "Murat Akyol'un mesajı"
-    },
-    {
-        serverId: 1,
-        username: "Murat",
-        userId: 1,
-        message: "Ahmet'in mesajı"
-    }
-]
+const messages = []
 
 let io = new Server(server, {
     cors: {
@@ -66,22 +66,21 @@ let io = new Server(server, {
 // ["MESSAGES","USER","SERVER LİST","GET SERVER MESSAGES"]
 
 io.on("connection", (socket) => {
-    socket.on("login", (info) => {
-        socket.emit("userInfo", userList.filter((user) => user.userId == info.userId
-        ))
-    })
+    socket.on("login", (info) => { socket.emit("userInfo", userList.filter((user) => user.userId == info.userId)) })
+    console.log(socket.id)
 
     socket.on("getServers", userId => {
+        console.log(userId)
         socket.emit("servers", serverList.filter(server => server.users.indexOf(userId) >= 0 ? true : false))
     })
 
     socket.on("getServerMessages", serverId => {
-        console.log(messages.filter(message => message.serverId == serverId))
         socket.emit("messages", messages.filter(message => message.serverId == serverId))
     })
 
     socket.on("sendMessage", message => {
         messages.push(message)
+        socket.broadcast.emit("message", message)
     })
 })
 

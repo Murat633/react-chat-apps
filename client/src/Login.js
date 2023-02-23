@@ -1,19 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import { Link, Navigate } from 'react-router-dom'
 
-function Login({ username, changeUsername, isLogginControl, isLoggin }) {
-    if (isLoggin) {
-        return <Navigate to="/home" />
+function Login({ isLoggin, setIsLoggin, userId }) {
+    const [userIdInput, setUserIdInput] = useState("")
+    if (isLoggin || userId) {
+        Navigate({ to: "/home" })
     }
     return (
         <div className='login'>
-            <input type="text" name='username' onChange={changeUsername} value={username} />
+            <input type="text" name='username' onChange={(e) => setUserIdInput(e.target.value)} value={userIdInput} />
             <Link onClick={() => {
-                localStorage.setItem("username", username)
-                isLogginControl()
-            }} className='loginBtn'>Giriş Yap</Link>
+                localStorage.setItem("userId", userIdInput)
+                setIsLoggin(true)
+            }} to="/home" className='loginBtn'>Giriş Yap</Link>
         </div>
     )
 }
 
-export default Login
+export const mapStateToProps = (state) => {
+    return {
+        userId: state.getUserIdReducer
+    }
+}
+
+export default connect(mapStateToProps)(Login)
